@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $is_single ? 'Bon de Retrait' : 'Bons de Retrait'; ?> - AirAvance</title>
+    <script>if(localStorage.getItem("daynight-theme")==="carbon"){document.documentElement.classList.add("carbon");}</script>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../admin/admin_dashboard.css">
+    <link rel="stylesheet" href="generate_voucher.css">
+    <link rel="icon" href="../../logo.svg" type="image/svg">
+</head>
+<body>
+    <div class="page-wrapper">
+        <?php if ($error_message): ?>
+            <div class="error-message">
+                <strong>Erreur:</strong> <?php echo htmlspecialchars($error_message); ?>
+            </div>
+            <div class="action-buttons">
+                <a href="../dcoa_dashboard.php" class="btn btn-back">Retour au tableau de bord</a>
+            </div>
+        <?php elseif (!empty($vouchers)): ?>
+            <div class="page-header">
+                <h1><?php echo $is_single ? 'Bon de Retrait' : 'Bons de Retrait'; ?></h1>
+                <p>Avances de Trésorerie</p>
+            </div>
+
+            <?php if (!$is_single): ?>
+                <div class="voucher-count no-print">
+                    <?php echo count($vouchers); ?> bon(s) généré(s)
+                </div>
+            <?php endif; ?>
+
+            <div class="action-buttons no-print">
+                <button class="btn btn-print" onclick="window.print()">
+                    <i class="fas fa-print"></i> Imprimer
+                </button>
+                <a href="../dcoa_dashboard.php" class="btn btn-back">Retour au tableau de bord</a>
+            </div>
+
+            <div class="vouchers-container">
+                <?php foreach ($vouchers as $voucher): ?>
+                    <div class="voucher-container">
+                        <div class="voucher-header">
+                            <div class="voucher-logo">✈ AirAvance</div>
+                            <div class="voucher-title">BON DE RETRAIT</div>
+                            <div class="voucher-subtitle">Avance de Trésorerie</div>
+                        </div>
+
+                        <div class="voucher-content">
+                            <!-- Personnel Information -->
+                            <div class="info-row">
+                                <span class="info-label">Matricule:</span>
+                                <span class="info-value"><?php echo htmlspecialchars($voucher['matricule']); ?></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Nom:</span>
+                                <span class="info-value"><?php echo htmlspecialchars($voucher['nom']); ?></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Prénom:</span>
+                                <span class="info-value"><?php echo htmlspecialchars($voucher['prenom']); ?></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Corps:</span>
+                                <span class="info-value"><?php echo htmlspecialchars($voucher['corps']); ?></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Base:</span>
+                                <span class="info-value"><?php echo htmlspecialchars($voucher['base']); ?></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Période:</span>
+                                <span class="info-value"><?php echo str_pad($voucher['mois'], 2, '0', STR_PAD_LEFT) . '/' . $voucher['annee']; ?></span>
+                            </div>
+
+
+                            
+
+                            <!-- Final Result -->
+                            <div class="total-row">
+                                <span class="total-label">MONTANT À RETIRER EN TND:</span>
+                                <span class="total-value"><?php echo number_format($voucher['net_tnd'], 2, '.', ' '); ?></span>
+                            </div>
+
+                            <!-- Signature Area -->
+                            <div class="signature-area">
+                                <div class="signature-box">
+                                    <div class="signature-line">Signature du Personnel</div>
+                                </div>
+                                <div class="signature-box">
+                                    <div class="signature-line">Visa du Trésorier</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="voucher-footer">
+                            <p>Date d'impression: <?php echo htmlspecialchars($voucher['print_date']); ?></p>
+                            <p style="margin-top: 10px; font-size: 11px; color: var(--text-secondary);">Ce document est à conserver. Ne divulguez pas les montants.</p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="action-buttons no-print" style="margin-top: 30px;">
+                <button class="btn btn-print" onclick="window.print()">
+                    <i class="fas fa-print"></i> Imprimer
+                </button>
+                <a href="../dcoa_dashboard.php" class="btn btn-back">Retour au tableau de bord</a>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <script>
+        // Auto-print on load if requested
+        if (new URLSearchParams(window.location.search).get('print') === '1') {
+            window.onload = function() {
+                setTimeout(function() {
+                    window.print();
+                }, 500);
+            };
+        }
+    </script>
+</body>
+</html>

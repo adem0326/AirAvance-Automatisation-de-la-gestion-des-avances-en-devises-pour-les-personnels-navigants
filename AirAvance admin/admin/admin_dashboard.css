@@ -1,0 +1,272 @@
+/* Admin Dashboard Modal Styles */
+
+/* Section & Search Box Styles */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    margin: 0;
+    flex: 1;
+}
+
+.search-box {
+    position: relative;
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 350px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 15px 10px 40px;
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: var(--bg-primary, #fff);
+    color: var(--text-primary, #333);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color, #4a90e2);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.search-input::placeholder {
+    color: var(--text-secondary, #999);
+}
+
+/* Modal Overlay - Fixed Animation */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s;
+}
+
+.modal-overlay.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Modal Wrapper - The Centering Fix */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: none; /* Controlled by JS or active class */
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* Clicks pass through to overlay */
+}
+
+/* Show modal when active */
+.modal-overlay.active + .modal,
+.modal.active {
+    display: flex;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: var(--bg-primary, #fff);
+    border-radius: 12px;
+    width: 95%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    position: relative;
+    pointer-events: auto; /* Enable clicks inside form */
+    border: 1px solid var(--border-color, #ddd);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-primary, #333);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--text-secondary, #666);
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--text-primary, #333);
+}
+
+/* Form Styles */
+.modal-form {
+    padding: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-primary, #333);
+    font-size: 0.95rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--bg-primary, #fff);
+    color: var(--text-primary, #333);
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color, #4a90e2);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px 25px;
+    border-top: 1px solid var(--border-color, #e0e0e0);
+    background: var(--bg-surface, #fafafa);
+}
+
+/* Carbon (Dark Mode) Theme */
+.carbon .modal-content,
+.carbon .search-input,
+.carbon .form-input {
+    background: #2a2a2a;
+    color: #ffffff;
+    border-color: #444;
+}
+
+.carbon .modal-header,
+.carbon .modal-footer {
+    border-color: #444;
+    background: #222;
+}
+
+.carbon .modal-header h2, 
+.carbon .form-label {
+    color: #fff;
+}
+
+.carbon .modal-close {
+    color: #999;
+}
+
+/* Role Badge Styles */
+.role-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.role-admin {
+    background: rgba(244, 67, 54, 0.15);
+    color: #F44336;
+}
+
+.role-dcoa {
+    background: rgba(33, 150, 243, 0.15);
+    color: #2196F3;
+}
+
+.role-dcsp {
+    background: rgba(156, 39, 176, 0.15);
+    color: #9C27B0;
+}
+
+.role-dgf {
+    background: rgba(76, 175, 80, 0.15);
+    color: #4CAF50;
+}
+
+.carbon .role-admin {
+    background: rgba(244, 67, 54, 0.15);
+    color: #EF5350;
+}
+
+.carbon .role-dcoa {
+    background: rgba(33, 150, 243, 0.15);
+    color: #64B5F6;
+}
+
+.carbon .role-dcsp {
+    background: rgba(156, 39, 176, 0.15);
+    color: #CE93D8;
+}
+
+.carbon .role-dgf {
+    background: rgba(76, 175, 80, 0.15);
+    color: #81C784;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        max-width: 100%;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+}

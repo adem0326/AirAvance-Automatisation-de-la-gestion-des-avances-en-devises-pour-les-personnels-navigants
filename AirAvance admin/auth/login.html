@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DayNight Admin</title>
+    <script>if(localStorage.getItem("daynight-theme")==="carbon"){document.documentElement.classList.add("carbon");}</script>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="icon" href="../logo.svg" type="image/svg">
+
+
+</head>
+<body>
+    <!-- Theme Toggle (Fixed Position) -->
+    <div class="login-theme-toggle">
+        <div class="theme-toggle">
+            <button class="theme-btn theme-btn-snow active" onclick="setTheme('snow')" title="Snow Edition">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+            </button>
+            <button class="theme-btn theme-btn-carbon" onclick="setTheme('carbon')" title="Carbon Edition">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <h1 class="login-title">Bienvenue</h1>
+                    <p class="login-subtitle">Connectez-vous à votre compte pour continuer</p>
+                </div>
+ 
+                <form class="login-form" method="post" action="login_process.php">
+                    <div class="form-group">
+                        <label class="form-label">Matricule</label>
+                        <input type="text" class="form-input" name="user_mat" placeholder="exemple123">
+                    </div>
+                    
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label class="form-label" style="margin-bottom: 0;">Mot de passe</label>
+                        </div>
+                        <input type="password" class="form-input" name="user_pass" placeholder="Entrez votre mot de passe">
+                    </div>
+
+                    <button type="submit" class="form-input" style="background-color: var(--accent); color: white; cursor: pointer; font-weight: 600; border: none; margin-top: 1rem;">
+                        Se connecter
+                    </button>
+                </form>
+            </div>
+
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.8125rem; color: var(--text-secondary);">
+                &copy; 2026 AirAvance</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" style="display: none; position: fixed; z-index: 1000; top: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, rgba(211, 47, 47, 0.85) 0%, rgba(244, 67, 54, 0.2) 100%); padding: 14px 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border-radius: 6px; animation: slideDown 0.4s ease-out; width: 90%; max-width: 500px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; color: white;">
+            <p id="errorMessage" style="margin: 0; font-size: 14px; font-weight: 500;"></p>
+            <button onclick="closeModal()" style="background-color: transparent; color: white; border: none; padding: 2px 8px; cursor: pointer; font-size: 20px; font-weight: bold; opacity: 0.8; transition: opacity 0.2s;">×</button>
+        </div>
+    </div>
+
+    <style>
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+
+    <script src="../script.js"></script>
+    <script>
+        function closeModal() {
+            document.getElementById('errorModal').style.display = 'none';
+        }
+
+        // Check for error in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            const error = urlParams.get('error');
+            const mat = urlParams.get('mat');
+            if (error === 'user_not_found') {
+                document.getElementById('errorMessage').innerText = 'Utilisateur non trouvé. Matricule: ' + mat;
+                document.getElementById('errorModal').style.display = 'block';
+            } else if (error === 'invalid_password') {
+                document.getElementById('errorMessage').innerText = 'Mot de passe invalide. Vérifiez votre mot de passe.';
+                document.getElementById('errorModal').style.display = 'block';
+            } else if (error === 'invalid_role') {
+                document.getElementById('errorMessage').innerText = 'Rôle utilisateur invalide. Veuillez contacter l\'administrateur.';
+                document.getElementById('errorModal').style.display = 'block';
+            } else if (error === 'unauthorized') {
+                document.getElementById('errorMessage').innerText = 'Accès non autorisé. Veuillez vous connecter.';
+                document.getElementById('errorModal').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

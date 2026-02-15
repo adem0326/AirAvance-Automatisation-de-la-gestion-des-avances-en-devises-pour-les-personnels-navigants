@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCSP Dashboard - AirAvance</title>
+    <script>if(localStorage.getItem("daynight-theme")==="carbon"){document.documentElement.classList.add("carbon");}</script>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../admin/admin_dashboard.css">
+    <link rel="stylesheet" href="../dcoa/dcoa_dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="../logo.svg" type="image/svg">
+    <style>
+        .card-disabled {
+            cursor: not-allowed !important;
+        }
+    </style>
+</head>
+<body>
+    <?php include '../includes/navbar.php'; ?>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <div class="header-content">
+                    <h1>Tableau de Bord DCSP</h1>
+                    <p>Import des données de déficit de caisse</p>
+                </div>
+            </div>
+
+            <!-- Period Selector Filter Bar -->
+            <div class="period-selector-bar">
+                <form method="POST" action="dcsp_dashboard.php" class="period-selector-form">
+                    <div class="form-group">
+                        <label for="mois">Mois:</label>
+                        <select id="mois" name="mois" required>
+                            <option value="">-- Sélectionner un mois --</option>
+                            <?php for ($m = 1; $m <= 12; $m++): ?>
+                                <option value="<?php echo $m; ?>" <?php echo $selected_mois === $m ? 'selected' : ''; ?>>
+                                    <?php echo str_pad($m, 2, '0', STR_PAD_LEFT); ?>
+                                </option>
+                            <?php endfor; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="annee">Année:</label>
+                        <select id="annee" name="annee" required>
+                            <option value="">-- Sélectionner une année --</option>
+                            <?php for ($y = 2025; $y <= 2030; $y++): ?>
+                                <option value="<?php echo $y; ?>" <?php echo $selected_annee === $y ? 'selected' : ''; ?>>
+                                    <?php echo $y; ?>
+                                </option>
+                            <?php endfor; ?>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-load-period">
+                        <i class="fas fa-filter"></i> Charger la Période
+                    </button>
+                </form>
+
+                <?php if ($period_selected): ?>
+                    <div class="period-info">
+                        <span class="period-badge">
+                            Période: <?php echo str_pad($selected_mois, 2, '0', STR_PAD_LEFT); ?>/<?php echo $selected_annee; ?>
+                        </span>
+                        <a href="dcsp_dashboard.php" class="btn-reset-period">
+                            <i class="fas fa-times"></i> Réinitialiser
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <?php if (!empty($error_message)): ?>
+                <div class="alert alert-error" style="display: flex; align-items: center; justify-content: space-between; position: fixed; z-index: 1001; top: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, rgba(211, 47, 47, 0.85) 0%, rgba(244, 67, 54, 0.2) 100%); padding: 14px 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border-radius: 6px; width: 90%; max-width: 500px; color: white;">
+                    <p style="margin: 0; font-size: 14px; font-weight: 500;"><?php echo htmlspecialchars($error_message); ?></p>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($success_message) && $period_selected): ?>
+                <div class="alert alert-success" style="display: flex; align-items: center; justify-content: space-between; position: fixed; z-index: 1001; top: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, rgba(76, 175, 80, 0.85) 0%, rgba(139, 195, 74, 0.2) 100%); padding: 14px 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border-radius: 6px; width: 90%; max-width: 500px; color: white;">
+                    <p style="margin: 0; font-size: 14px; font-weight: 500;"><i class="fas fa-check-circle"></i> Importation réussie pour la période <?php echo str_pad($selected_mois, 2, '0', STR_PAD_LEFT); ?>/<?php echo $selected_annee; ?></p>
+                </div>
+            <?php endif; ?>
+
+            <div class="action-section">
+                <h2>Actions</h2>
+                <div class="action-grid">
+                    <?php 
+                    $import_url = $period_selected ? 'import/import_dcsp.php?mois=' . urlencode($selected_mois) . '&annee=' . urlencode($selected_annee) : '#';
+                    $report_url = $period_selected ? 'export_deficit_report.php?mois=' . urlencode($selected_mois) . '&annee=' . urlencode($selected_annee) : '#';
+                    ?>
+                    <a href="<?php echo htmlspecialchars($import_url); ?>" class="action-card action-import <?php echo !$period_selected ? 'card-disabled' : ''; ?>" <?php echo !$period_selected ? 'onclick="event.preventDefault();"' : ''; ?>>
+                        <div class="action-icon import-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <path d="M1 10h22"></path>
+                            </svg>
+                        </div>
+                        <h3>Import DCSP</h3>
+                        <p>Importer les données de déficit de caisse (CSV)</p>
+                    </a>
+
+                    <a href="<?php echo htmlspecialchars($report_url); ?>" class="action-card action-generate <?php echo !$period_selected ? 'card-disabled' : ''; ?>" <?php echo !$period_selected ? 'onclick="event.preventDefault();"' : ''; ?>>
+                        <div class="action-icon generate-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Rapport Déficit</h3>
+                        <p><?php echo !$period_selected ? 'Sélectionnez une période' : 'Générer le rapport des déficits (TND)'; ?></p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../script.js"></script>
+    <script>
+        function updateFileName(input) {
+            const fileLabel = input.parentElement.querySelector('.file-label');
+            if (input.files && input.files[0]) {
+                fileLabel.textContent = input.files[0].name;
+            } else {
+                fileLabel.textContent = 'Sélectionnez un fichier CSV';
+            }
+        }
+    </script>
+</body>
+</html>

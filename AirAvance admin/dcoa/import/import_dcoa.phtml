@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import DCOA - AirAvance Admin</title>
+    <script>
+        if (localStorage.getItem('daynight-theme') === 'carbon') {
+            document.documentElement.classList.add('carbon');
+        }
+    </script>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="../../logo.svg" type="image/svg">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --primary-dark: #0052a3;
+            --card-bg: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --input-bg: #f5f5f5;
+            --input-bg-hover: #efefef;
+            --border-color: #dddddd;
+            --disabled-color: #cccccc;
+            --info-bg: #e3f2fd;
+        }
+
+        html.carbon {
+            --primary-color: #4a9eff;
+            --primary-dark: #357abd;
+            --card-bg: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --input-bg: #2d2d2d;
+            --input-bg-hover: #3d3d3d;
+            --border-color: #404040;
+            --disabled-color: #555555;
+            --info-bg: #1a3a52;
+        }
+
+        .import-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .import-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .import-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .import-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 28px;
+            color: var(--text-primary);
+        }
+
+        .import-header p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 2rem;
+            background: var(--input-bg);
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .file-input-label:hover {
+            background: var(--input-bg-hover);
+            border-color: var(--primary-color);
+        }
+
+        .file-input-label.drag-over {
+            background: rgba(74, 158, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .file-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-name {
+            margin-top: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .file-requirements {
+            background: var(--info-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .file-requirements h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+        }
+
+        .file-requirements ul {
+            margin: 0;
+            padding-left: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .file-requirements li {
+            margin: 0.3rem 0;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-submit:disabled {
+            background: var(--disabled-color);
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        html.carbon .alert-error {
+            background: #3e2723;
+            color: #ff8a80;
+            border-left-color: #ff8a80;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        html.carbon .alert-success {
+            background: #1b5e20;
+            color: #81c784;
+            border-left-color: #81c784;
+        }
+
+        .alert-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <?php include '../../includes/navbar.php'; ?>
+
+    <div class="main-content">
+        <div class="import-container">
+            
+            <?php if (!empty($error_message)): ?>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle alert-icon"></i>
+                    <span><?php echo htmlspecialchars($error_message); ?></span>
+                </div>
+            <?php endif; ?>
+
+            <div class="import-card">
+                <div class="import-header">
+                    <h1><i class="fas fa-upload"></i> Import DCOA</h1>
+                    <p>Importer les données du Personnel Navigant</p>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" id="importForm">
+                    <div class="file-upload-wrapper">
+                        <label for="fileInput" class="file-input-label" id="fileLabel">
+                            <div class="file-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <p><strong>Cliquez pour sélectionner un fichier</strong></p>
+                            <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary, #666); font-size: 14px;">ou glissez-déposez votre fichier</p>
+                            <div class="file-name" id="fileName"></div>
+                        </label>
+                        <input type="file" id="fileInput" name="file" accept=".csv,.xlsx,.xls" required>
+                    </div>
+
+                    <div class="file-requirements">
+                        <h4><i class="fas fa-info-circle"></i> Format du fichier</h4>
+                        <ul>
+                            <li><strong>Format accepté:</strong> CSV</li>
+                            <li><strong>Colonnes requises (dans cet ordre):</strong></li>
+                            <ul>
+                                <li>Matricule</li>
+                                <li>Nom</li>
+                                <li>Prenom</li>
+                                <li>Mois</li>
+                                <li>Annee</li>
+                                <li>Corps (PNT ou PNC)</li>
+                                <li>Avance</li>
+                                <li>Base</li>
+                            </ul>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-upload"></i> Importer
+                    </button>
+
+                    <div class="loading" id="loading">
+                        <span class="spinner"></span> Traitement en cours...
+                    </div>
+                </form>
+
+                <a href="../dcoa_dashboard.php" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../script.js"></script>
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileLabel = document.getElementById('fileLabel');
+        const fileName = document.getElementById('fileName');
+        const importForm = document.getElementById('importForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+
+        // File input change
+        fileInput.addEventListener('change', function(e) {
+            if (this.files.length > 0) {
+                fileName.textContent = '✓ ' + this.files[0].name;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Drag and drop
+        fileLabel.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileLabel.classList.add('drag-over');
+        });
+
+        fileLabel.addEventListener('dragleave', () => {
+            fileLabel.classList.remove('drag-over');
+        });
+
+        fileLabel.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileLabel.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                fileName.textContent = '✓ ' + files[0].name;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Form submission
+        importForm.addEventListener('submit', function(e) {
+            if (!fileInput.files.length) {
+                e.preventDefault();
+                alert('Veuillez sélectionner un fichier');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

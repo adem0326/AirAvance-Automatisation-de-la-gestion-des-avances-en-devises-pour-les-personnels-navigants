@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCOA Dashboard - AirAvance</title>
+    <script>if(localStorage.getItem("daynight-theme")==="carbon"){document.documentElement.classList.add("carbon");}</script>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../admin/admin_dashboard.css">
+    <link rel="stylesheet" href="dcoa_dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="../logo.svg" type="image/svg">
+</head>
+<body>
+    <?php include '../includes/navbar.php'; ?>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <div class="header-content">
+                    <h1>Tableau de Bord DCOA</h1>
+                    <p>Gestion des importations PN et des traitements DCOA</p>
+                </div>
+            </div>
+
+            <!-- Period Selector Filter Bar -->
+            <div class="period-selector-bar">
+                <form method="POST" action="dcoa_dashboard.php" class="period-selector-form">
+                    <div class="form-group">
+                        <label for="mois">Mois:</label>
+                        <select id="mois" name="mois" required>
+                            <option value="">-- Sélectionner un mois --</option>
+                            <?php for ($m = 1; $m <= 12; $m++): ?>
+                                <option value="<?php echo $m; ?>" <?php echo $selected_mois === $m ? 'selected' : ''; ?>>
+                                    <?php echo str_pad($m, 2, '0', STR_PAD_LEFT); ?>
+                                </option>
+                            <?php endfor; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="annee">Année:</label>
+                        <select id="annee" name="annee" required>
+                            <option value="">-- Sélectionner une année --</option>
+                            <?php for ($y = 2025; $y <= 2030; $y++): ?>
+                                <option value="<?php echo $y; ?>" <?php echo $selected_annee === $y ? 'selected' : ''; ?>>
+                                    <?php echo $y; ?>
+                                </option>
+                            <?php endfor; ?>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-load-period">
+                        <i class="fas fa-filter"></i> Charger la Liste
+                    </button>
+                </form>
+
+                <?php if ($period_selected): ?>
+                    <div class="period-info">
+                        <span class="period-badge">
+                            Période: <?php echo str_pad($selected_mois, 2, '0', STR_PAD_LEFT); ?>/<?php echo $selected_annee; ?>
+                        </span>
+                        <a href="dcoa_dashboard.php" class="btn-reset-period">
+                            <i class="fas fa-times"></i> Réinitialiser
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <?php if (!empty($error_message)): ?>
+                <div class="alert alert-error" style="display: flex; align-items: center; justify-content: space-between; position: fixed; z-index: 1001; top: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, rgba(211, 47, 47, 0.85) 0%, rgba(244, 67, 54, 0.2) 100%); padding: 14px 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border-radius: 6px; width: 90%; max-width: 500px; color: white;">
+                    <p style="margin: 0; font-size: 14px; font-weight: 500;"><?php echo htmlspecialchars($error_message); ?></p>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($warning_message)): ?>
+                <div class="alert alert-warning" style="display: flex; align-items: center; justify-content: space-between; position: fixed; z-index: 1001; top: 80px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, rgba(255, 152, 0, 0.85) 0%, rgba(255, 193, 7, 0.2) 100%); padding: 14px 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border-radius: 6px; width: 90%; max-width: 500px; color: white;">
+                    <p style="margin: 0; font-size: 14px; font-weight: 500;"><i class="fas fa-exclamation-triangle"></i> <?php echo htmlspecialchars($warning_message); ?></p>
+                </div>
+            <?php endif; ?>
+
+            <div class="action-section">
+                <h2>Actions Principales</h2>
+                <div class="action-grid">
+                    <a href="import/import_dcoa.php" class="action-card action-import">
+                        <div class="action-icon import-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </div>
+                        <h3>Import DCOA</h3>
+                        <p>Importer les données PN (CSV)</p>
+                    </a>
+
+                    <form method="post" action="generer_dcoa/export_dcoa.php" class="action-card action-generate <?php echo !$can_generate_payment ? 'card-disabled' : ''; ?>">
+                        <input type="hidden" name="mois" value="<?php echo htmlspecialchars($selected_mois ?? ''); ?>">
+                        <input type="hidden" name="annee" value="<?php echo htmlspecialchars($selected_annee ?? ''); ?>">
+                        <div class="action-icon generate-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Générer DCOA</h3>
+                        <p><?php echo !$period_selected ? 'Sélectionnez une période' : 'Générer le fichier DCOA consolidé'; ?></p>
+                        <button type="submit" <?php echo !$can_generate_payment ? 'disabled' : ''; ?> style="position: absolute; width: 100%; height: 100%; top:0; left:0; opacity: 0; cursor: <?php echo !$can_generate_payment ? 'not-allowed' : 'pointer'; ?>;"></button>
+                    </form>
+
+                    <form method="post" action="generer_bon/generate_voucher.php" class="action-card action-generate <?php echo !$can_generate_payment ? 'card-disabled' : ''; ?>">
+                        <input type="hidden" name="mois" value="<?php echo htmlspecialchars($selected_mois ?? ''); ?>">
+                        <input type="hidden" name="annee" value="<?php echo htmlspecialchars($selected_annee ?? ''); ?>">
+                        <div class="action-icon generate-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Générer Bon Pour Tout</h3>
+                        <p><?php echo !$period_selected ? 'Sélectionnez une période' : 'Générer les bons de retrait pour tout le personnel'; ?></p>
+                        <button type="submit" <?php echo !$can_generate_payment ? 'disabled' : ''; ?> style="position: absolute; width: 100%; height: 100%; top:0; left:0; opacity: 0; cursor: <?php echo !$can_generate_payment ? 'not-allowed' : 'pointer'; ?>;"></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="data-section">
+                <div class="data-section-header">
+                    <h2>Liste du Personnel</h2>
+                    <div class="search-box">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%);"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher le personnel" onkeyup="filterTable()" <?php echo !$period_selected ? 'disabled' : ''; ?>>
+                    </div>
+                </div>
+
+                <?php if (!$period_selected): ?>
+                    <div class="empty-state-message">
+                        <i class="fas fa-calendar-check" style="font-size: 48px; color: #ccc; margin-bottom: 16px;"></i>
+                        <h3>Sélectionnez une période</h3>
+                        <p>Veuillez utiliser le sélecteur de période ci-dessus pour afficher les données du personnel.</p>
+                    </div>
+                <?php else: ?>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Matricule</th>
+                                    <th>Nom & Prénom</th>
+                                    <th>Corps</th>
+                                    <th>Base</th>
+                                    <th>Montant Avance</th>
+                                    <th>Déficit</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($personnel_data)): ?>
+                                    <?php foreach ($personnel_data as $person): ?>
+                                        <tr class="personnel-row" data-search="<?php echo strtolower(htmlspecialchars($person['MATRICULE'] . ' ' . $person['NOM'] . ' ' . $person['PRENOM'] . ' ' . $person['CORPS_PN'] . ' ' . $person['BASE'])); ?>">
+                                            <td><span class="badge-matricule"><?php echo htmlspecialchars($person['MATRICULE']); ?></span></td>
+                                            <td><?php echo htmlspecialchars($person['NOM'] . ' ' . $person['PRENOM']); ?></td>
+                                            <td>
+                                                <span class="badge <?php echo $person['CORPS_PN'] === 'PNT' ? 'badge-pnt' : 'badge-pnc'; ?>">
+                                                    <?php echo htmlspecialchars($person['CORPS_PN']); ?>
+                                                </span>
+                                            </td>
+                                            <td><?php echo htmlspecialchars($person['BASE'] ?? '--'); ?></td>
+                                            <td><?php echo isset($person['MONTANT_AVANCE']) ? number_format($person['MONTANT_AVANCE'], 2) : '0.00'; ?></td>
+                                            <td><?php echo isset($person['DEFICIT_CAISSE']) ? number_format($person['DEFICIT_CAISSE'], 2) : '0.00'; ?></td>
+                                            <td>
+                                                <?php 
+                                                // Action logic: Disabled if no exchange rate or specific conditions
+                                                $disabled = !$period_has_taux;
+                                                $title = $disabled ? 'Aucun taux de change disponible pour cette période' : 'Générer Bon';
+                                                $voucher_url = $disabled ? '#' : 'generer_bon/generate_voucher.php?matricule=' . urlencode($person['MATRICULE']) . '&mois=' . $selected_mois . '&annee=' . $selected_annee;
+                                                ?>
+                                                <a href="<?php echo $voucher_url; ?>" 
+                                                   class="btn-action <?php echo $disabled ? 'disabled' : ''; ?>" 
+                                                   title="<?php echo $title; ?>"
+                                                   <?php echo $disabled ? 'onclick="event.preventDefault();"' : ''; ?>>
+                                                    <i class="fas fa-print"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr id="emptyState"><td colspan="7" class="empty-state">Aucune donnée trouvée pour cette période</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+    <script src="../script.js"></script>
+    <script>     // Search/Filter Table Function
+        function filterTable() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.toLowerCase();
+            const tableRows = document.querySelectorAll('.personnel-row');
+            const emptyState = document.getElementById('emptyState');
+            let visibleCount = 0;
+
+            tableRows.forEach(row => {
+                const searchData = row.getAttribute('data-search');
+                if (searchData.includes(searchTerm)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (emptyState) {
+                emptyState.style.display = visibleCount === 0 ? '' : 'none';
+            }
+        }</script>
+</body>
+</html>

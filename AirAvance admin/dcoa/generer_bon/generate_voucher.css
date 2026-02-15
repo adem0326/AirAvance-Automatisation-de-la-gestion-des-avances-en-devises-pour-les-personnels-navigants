@@ -1,0 +1,256 @@
+@media print {
+    body {
+        background: white;
+    }
+    .no-print {
+        display: none !important;
+    }
+    .voucher-container {
+        page-break-after: always;
+    }
+}
+
+:root {
+    --primary-color: #0066cc;
+    --primary-dark: #0052a3;
+    --card-bg: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #dddddd;
+}
+
+html.carbon {
+    --primary-color: #4a9eff;
+    --primary-dark: #357abd;
+    --card-bg: #1e1e1e;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --border-color: #404040;
+}
+
+.page-wrapper {
+    padding: 20px;
+    background: var(--bg-secondary);
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--text-primary);
+}
+
+.page-header h1 {
+    margin: 0 0 5px 0;
+    font-size: 28px;
+}
+
+.page-header p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.vouchers-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+.voucher-container {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.voucher-header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 20px;
+}
+
+.voucher-logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.voucher-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 10px 0;
+}
+
+.voucher-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.voucher-content {
+    margin: 30px 0;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 14px;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 150px;
+}
+
+.info-value {
+    color: var(--text-secondary);
+    text-align: right;
+    flex: 1;
+}
+
+.calculation-section {
+    background: var(--bg-secondary);
+    border-left: 4px solid var(--primary-color);
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+.calculation-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+.calculation-label {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.calculation-value {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-top: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color);
+    margin: 20px 0;
+    font-size: 16px;
+}
+
+.total-label {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.total-value {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 18px;
+}
+
+.voucher-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid var(--border-color);
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.signature-area {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 40px;
+    font-size: 12px;
+}
+
+.signature-box {
+    text-align: center;
+    width: 40%;
+}
+
+.signature-line {
+    border-top: 1px solid var(--border-color);
+    margin-top: 40px;
+    padding-top: 8px;
+    color: var(--text-primary);
+}
+
+.error-message {
+    background: #ffebee;
+    color: #c62828;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #c62828;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+html.carbon .error-message {
+    background: #3e2723;
+    color: #ff8a80;
+    border-left-color: #ff8a80;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-print {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-print:hover {
+    background: var(--primary-dark);
+}
+
+.btn-back {
+    background: var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-back:hover {
+    background: #aaaaaa;
+}
+
+.voucher-count {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 14px;
+}
