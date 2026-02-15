@@ -141,7 +141,6 @@ AirAvance-admin/
 ├── models/          # Modèles de données
 ├── views/           # Vues (templates HTML)
 ├── includes/        # Fichiers PHP communs
-├── uploads/         # Fichiers téléchargés
 └── index.php        # Point d'entrée de l'application
 ```
 
