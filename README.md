@@ -210,14 +210,7 @@ Les contributions sont les bienvenues ! Pour contribuer :
 4. Pushez vers la branche (`git push origin feature/AmazingFeature`)
 5. Ouvrez une Pull Request
 
-## 📝 Roadmap
 
-- [ ] Intégration d'une API de taux de change en temps réel
-- [ ] Application mobile pour les personnels navigants
-- [ ] Module de notifications par email/SMS
-- [ ] Export des rapports en PDF
-- [ ] Tableau de bord analytique avancé
-- [ ] Support multilingue
 
 ## 📄 Licence
 
